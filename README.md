@@ -39,7 +39,6 @@ $ vim AutoAttack.sh
 Script has to be run with root privileges to be able to access your devices.
 
 ```bash
-$ sudo apt install evemu-tools
 $ cd /path/to/script
 $ sudo bash AutoAttack.sh
 ```
