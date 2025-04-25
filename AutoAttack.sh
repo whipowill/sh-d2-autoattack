@@ -5,9 +5,10 @@
 # by whipowill
 # =================================================
 
-# INSTALL: sudo apt install evemu-tools
+# INSTALL: sudo apt install evemu-tools evtest
 # Script uses evemu-tools to make low-latecy mouse clicks.
 # Original version used xdotool but it was too laggy.
+# Script also uses xinput and evtest to determine mouse & keyboard.
 
 # limit windows where this script runs (searches for word)
 TARGET_WINDOWS="Diablo|Torchlight|Exile"
@@ -15,52 +16,9 @@ TARGET_WINDOWS="Diablo|Torchlight|Exile"
 # click delay in seconds to limit resource usage
 CLICK_DELAY=0.1
 
-# -------------------------------------------------------------------
-# DEVICE DETECTION
-# -------------------------------------------------------------------
-
-# find keyboard
-find_keyboard()
-{
-    local devices=(
-        "AT Translated Set 2 keyboard" 
-        $(xinput list --name-only | grep -i "keyboard" | head -1)
-    )
-    
-    for dev in "${devices[@]}"; do
-        id=$(xinput list --id-only "$dev" 2>/dev/null)
-        [ -n "$id" ] && { echo "$id"; return; }
-    done
-    echo "ERROR: No keyboard found!" >&2
-    exit 1
-}
-
-# find mouse
-find_mouse()
-{
-    local mouse=$(ls /dev/input/by-id/* 2>/dev/null | grep -iE "mouse|event" | head -1)
-    [ -e "$mouse" ] && { echo "$mouse"; return; }
-    
-    mouse=$(grep -l "Mouse" /sys/class/input/event*/device/name 2>/dev/null | head -1)
-    mouse="/dev/input/${mouse#*/sys/class/input/}"
-    [ -e "$mouse" ] && { echo "$mouse"; return; }
-    
-    mouse=$(ls /dev/input/event* 2>/dev/null | head -1)
-    [ -e "$mouse" ] && { echo "$mouse"; return; }
-    
-    echo "ERROR: No mouse device detected!" >&2
-    echo "Available devices:" >&2
-    ls /dev/input/ >&2
-    exit 1
-}
-
-# init devices
-KEYBOARD_ID=$(find_keyboard)
-MOUSE_DEV=$(find_mouse)
-
-# report
-#echo "Using keyboard ID: $KEYBOARD_ID"
-#echo "Using mouse device: $MOUSE_DEV"
+# register your devices
+KEYBOARD_ID=16 # find using "xinput list"
+MOUSE_DEV=/dev/input/event5 # find using "sudo evtest"
 
 # -------------------------------------------------------------------
 # MAIN SCRIPT
