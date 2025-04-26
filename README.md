@@ -36,7 +36,7 @@ $ vim AutoAttack.sh
 
 ## Usage
 
-Script has to be run with root privileges to be able to access your devices.
+Script has to be run with root privileges to be able to access your devices:
 
 ```bash
 $ cd /path/to/script
